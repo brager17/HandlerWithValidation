@@ -8,22 +8,34 @@ using System.Threading.Tasks;
 
 namespace ValidationHandlerTemplate
 {
-    public abstract class AsyncValidationHandlerV3 : IAsyncHandler<TIn, TOut>, IAsyncValidator<TIn>
+    public abstract class AsyncValidationHandlerV3 : IAsyncHandler<TIn, TOut>, IAsyncValidator<TIn>,IDisposable
     {
-        private TIn _handlerInput;
-        private TIn _validationInput;
+        private TIn _previousInput;
         private IEnumerator<(Func<TIn, CancellationToken, Task>, Func<bool>, ValidationResult)> _enumerator;
 
-        private IEnumerator<(Func<TIn, CancellationToken, Task> Initialize, Func<bool> Check, ValidationResult Result)>
-            ValidationEnumerator
+        private IEnumerator<(Func<TIn, CancellationToken, Task> Initialize, Func<bool> Check, ValidationResult
+            Result)> GetEnumerator(TIn input)
         {
-            get
+            if (_previousInput == null || _previousInput != input)
             {
-                return _handlerInput == _validationInput
-                    ? _enumerator
-                    : _enumerator = Initializing()
-                        .Zip(Validators(), (a, c) => (initialize: a, check: c.Item1, result: c.Item2)).GetEnumerator();
+                _previousInput = input;
+                return _enumerator = CreateEnumerator();
             }
+
+            if (_previousInput == input)
+            {
+                return _enumerator;
+            }
+
+            throw new ArgumentException();
+        }
+
+        private IEnumerator<(Func<TIn, CancellationToken, Task> initialize, Func<bool> check, ValidationResult result)>
+            CreateEnumerator()
+        {
+            return Initializing()
+                .Zip(Validators(), (a, c) => (initialize: a, check: c.Item1, result: c.Item2))
+                .GetEnumerator();
         }
 
         protected abstract IEnumerable<Func<TIn, CancellationToken, Task>> Initializing();
@@ -32,11 +44,11 @@ namespace ValidationHandlerTemplate
 
         public async Task<TOut> AsyncHandle(TIn input, CancellationToken ct)
         {
-            _handlerInput = input;
             //initialize other
-            while (_enumerator.MoveNext())
+            var ve = GetEnumerator(input);
+            while (ve.MoveNext())
             {
-                await _enumerator.Current.Item1(input, ct);
+                await ve.Current.Item1(input, ct);
             }
 
             return await Handle(input);
@@ -46,17 +58,22 @@ namespace ValidationHandlerTemplate
 
         public virtual async Task<IEnumerable<ValidationResult>> Validate(TIn obj, CancellationToken ct)
         {
-            _validationInput = obj;
-            while (ValidationEnumerator.MoveNext())
+            var ve = GetEnumerator(obj);
+            while (ve.MoveNext())
             {
-                await ValidationEnumerator.Current.Initialize(obj, ct);
-                if (ValidationEnumerator.Current.Check())
+                await ve.Current.Initialize(obj, ct);
+                if (ve.Current.Check())
                 {
-                    return await Task.FromResult(new[] {ValidationEnumerator.Current.Result});
+                    return await Task.FromResult(new[] {ve.Current.Result});
                 }
             }
 
             return null;
+        }
+
+        public void Dispose()
+        {
+            _enumerator?.Dispose();
         }
     }
 }
