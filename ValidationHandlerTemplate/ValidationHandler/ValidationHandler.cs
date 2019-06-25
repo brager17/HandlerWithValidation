@@ -20,7 +20,7 @@ namespace ValidationHandlerTemplate
             {
                 return _handlerInput == _validationInput
                     ? _enumerator
-                    : _enumerator??=Initializing()
+                    : _enumerator = Initializing()
                         .Zip(Validators(), (a, c) => (initialize: a, check: c.Item1, result: c.Item2)).GetEnumerator();
             }
         }

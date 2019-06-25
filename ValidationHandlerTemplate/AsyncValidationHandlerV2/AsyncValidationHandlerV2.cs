@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ValidationHandlerTemplate
@@ -19,7 +20,7 @@ namespace ValidationHandlerTemplate
             {
                 return _handlerInput == _validationInput
                     ? _enumerator
-                    : _enumerator??=Initializing()
+                    : _enumerator = Initializing()
                         .Zip(Validators(), (a, c) => (initialize: a, check: c.Item1, result: c.Item2)).GetEnumerator();
             }
         }
@@ -27,18 +28,6 @@ namespace ValidationHandlerTemplate
         protected abstract IEnumerable<Func<TIn, Task>> Initializing();
 
         protected abstract IEnumerable<(Func<bool>, ValidationResult)> Validators();
-
-        public async Task<TOut> AsyncHandle(TIn input)
-        {
-            _handlerInput = input;
-            //initialize other
-            while (_enumerator.MoveNext())
-            {
-                await _enumerator.Current.Item1(input);
-            }
-
-            return await Handle(input);
-        }
 
         protected abstract Task<TOut> Handle(TIn input);
 
@@ -54,6 +43,18 @@ namespace ValidationHandlerTemplate
                     yield break;
                 }
             }
+        }
+
+        public async Task<TOut> AsyncHandle(TIn input, CancellationToken ct)
+        {
+            _handlerInput = input;
+            //initialize other
+            while (_enumerator.MoveNext())
+            {
+                await _enumerator.Current.Item1(input);
+            }
+
+            return await Handle(input);
         }
     }
 }

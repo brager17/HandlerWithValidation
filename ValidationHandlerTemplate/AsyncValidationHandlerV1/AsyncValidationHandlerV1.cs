@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ValidationHandlerTemplate
 {
-    public class AsyncEnumerabeValidationHandlerV1 : IAsyncHandler<TIn, TOut>, IAsyncEnumerabeValidator<TIn>, IDisposable
+    public class AsyncEnumerableValidationHandlerV1 : IAsyncHandler<TIn, TOut>, IAsyncEnumerabeValidator<TIn>, IDisposable
     {
         private IEnumerator<(Func<TIn, Task>, Func<bool>, ValidationResult)> _enumerator;
         private string Name { get; set; }
@@ -40,21 +41,6 @@ namespace ValidationHandlerTemplate
                         .Zip(Validators(), (a, c) => (initialize: a, check: c.Item1, result: c.Item2)).GetEnumerator();
             }
         }
-
-        public async Task<TOut> AsyncHandle(TIn input)
-        {
-            _handlerInput = input;
-            //initialize other
-            while (_enumerator.MoveNext())
-            {
-                await _enumerator.Current.Item1(input);
-            }
-
-            // do actions
-            // return value
-            return null;
-        }
-
         public async IAsyncEnumerable<ValidationResult> Validate(TIn obj)
         {
             _validationInput = obj;
@@ -81,6 +67,20 @@ namespace ValidationHandlerTemplate
         public void Dispose()
         {
             _enumerator?.Dispose();
+        }
+
+        public async Task<TOut> AsyncHandle(TIn input, CancellationToken ct)
+        {
+            _handlerInput = input;
+            //initialize other
+            while (_enumerator.MoveNext())
+            {
+                await _enumerator.Current.Item1(input);
+            }
+
+            // do actions
+            // return value
+            return null;
         }
     }
 }

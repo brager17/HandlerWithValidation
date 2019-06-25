@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ValidationHandlerTemplate
@@ -37,7 +38,7 @@ namespace ValidationHandlerTemplate
 
     public interface IAsyncHandler<T, T1>
     {
-        Task<T1> AsyncHandle(T input);
+        Task<T1> AsyncHandle(T input, CancellationToken ct);
     }
 
     public interface IAsyncEnumerabeValidator<T>
@@ -47,6 +48,6 @@ namespace ValidationHandlerTemplate
 
     public interface IAsyncValidator<T>
     {
-        Task<IEnumerable<ValidationResult>> Validate(T obj);
+        Task<IEnumerable<ValidationResult>> Validate(T obj, CancellationToken ct);
     }
 }
