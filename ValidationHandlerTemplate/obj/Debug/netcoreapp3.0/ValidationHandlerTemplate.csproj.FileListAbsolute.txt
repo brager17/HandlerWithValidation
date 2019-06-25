@@ -1,0 +1,12 @@
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\bin\Debug\netcoreapp3.0\ValidationHandlerTemplate.exe
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\bin\Debug\netcoreapp3.0\ValidationHandlerTemplate.deps.json
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\bin\Debug\netcoreapp3.0\ValidationHandlerTemplate.runtimeconfig.json
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\bin\Debug\netcoreapp3.0\ValidationHandlerTemplate.runtimeconfig.dev.json
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\bin\Debug\netcoreapp3.0\ValidationHandlerTemplate.dll
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\bin\Debug\netcoreapp3.0\ValidationHandlerTemplate.pdb
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\obj\Debug\netcoreapp3.0\ValidationHandlerTemplate.csprojAssemblyReference.cache
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\obj\Debug\netcoreapp3.0\ValidationHandlerTemplate.csproj.CoreCompileInputs.cache
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\obj\Debug\netcoreapp3.0\ValidationHandlerTemplate.AssemblyInfoInputs.cache
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\obj\Debug\netcoreapp3.0\ValidationHandlerTemplate.AssemblyInfo.cs
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\obj\Debug\netcoreapp3.0\ValidationHandlerTemplate.dll
+C:\Users\Евгений\RiderProjects\ValidationHandlerTemplate\ValidationHandlerTemplate\obj\Debug\netcoreapp3.0\ValidationHandlerTemplate.pdb
